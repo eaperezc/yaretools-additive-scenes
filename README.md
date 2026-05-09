@@ -12,7 +12,7 @@ Lightweight runtime + editor tools for additive multi-scene Unity workflows.
 In Unity Package Manager → **Add package from git URL…**:
 
 ```
-https://github.com/<your-user>/unity-additive-scenes.git
+https://github.com/eaperezc/yaretools-additive-scenes.git
 ```
 
 Requires Unity 2021.3+.
@@ -42,6 +42,8 @@ public class Boot : MonoBehaviour
 ### Editor
 
 Open `Window > Scene Loader`. Each scene enabled in Build Settings gets a row with Load/Unload/Ping. Use **Refresh** to re-scan Build Settings.
+
+The **first enabled scene in Build Settings is treated as the Master scene**: it's pinned at the top of the window and is excluded from **Unload All** (so an `Unload All` leaves you with just the Master loaded — useful for clearing rooms while keeping bootstrap state).
 
 In edit mode, the first scene opened uses `OpenSceneMode.Single` (so you don't end up with stale scenes); subsequent loads are additive. The window refuses to close the last open scene.
 

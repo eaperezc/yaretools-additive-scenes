@@ -9,6 +9,7 @@ namespace YareTools.EditorTools
 {
     public class SceneLoaderWindow : EditorWindow
     {
+        private string masterPath;
         private List<string> scenePaths = new List<string>();
         private Vector2 scroll;
 
@@ -23,12 +24,14 @@ namespace YareTools.EditorTools
 
         private void Refresh()
         {
+            masterPath = null;
             scenePaths.Clear();
             foreach (var s in EditorBuildSettings.scenes)
             {
                 if (!s.enabled) continue;
                 if (string.IsNullOrEmpty(s.path)) continue;
-                scenePaths.Add(s.path);
+                if (masterPath == null) masterPath = s.path;
+                else scenePaths.Add(s.path);
             }
         }
 
@@ -36,7 +39,8 @@ namespace YareTools.EditorTools
         {
             EditorGUILayout.LabelField("Scenes (from Build Settings)", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "Loads scenes additively. In edit mode, opens the first scene as Single if nothing is loaded yet.",
+                "First enabled scene in Build Settings is the Master and is excluded from Unload All. " +
+                "In edit mode, opens the first scene as Single if nothing is loaded yet.",
                 MessageType.None);
 
             using (new EditorGUILayout.HorizontalScope())
@@ -46,9 +50,9 @@ namespace YareTools.EditorTools
                 if (GUILayout.Button("Refresh", GUILayout.Width(80))) Refresh();
             }
 
-            EditorGUILayout.Space(4);
+            EditorGUILayout.Space(6);
 
-            if (scenePaths.Count == 0)
+            if (masterPath == null && scenePaths.Count == 0)
             {
                 EditorGUILayout.HelpBox(
                     "No scenes enabled in Build Settings. Add scenes via File > Build Settings.",
@@ -56,13 +60,21 @@ namespace YareTools.EditorTools
                 return;
             }
 
+            if (masterPath != null)
+            {
+                EditorGUILayout.LabelField("Master", EditorStyles.boldLabel);
+                DrawRow(masterPath, isMaster: true);
+                EditorGUILayout.Space(8);
+                EditorGUILayout.LabelField("Rooms", EditorStyles.boldLabel);
+            }
+
             scroll = EditorGUILayout.BeginScrollView(scroll);
             foreach (var path in scenePaths)
-                DrawRow(path);
+                DrawRow(path, isMaster: false);
             EditorGUILayout.EndScrollView();
         }
 
-        private void DrawRow(string path)
+        private void DrawRow(string path, bool isMaster)
         {
             string label = Path.GetFileNameWithoutExtension(path);
             bool exists = File.Exists(path);
@@ -73,7 +85,7 @@ namespace YareTools.EditorTools
             {
                 var prevBg = GUI.backgroundColor;
                 GUI.backgroundColor = loaded ? new Color(0.55f, 0.85f, 0.55f) : prevBg;
-                EditorGUILayout.LabelField(label, GUILayout.Width(180));
+                EditorGUILayout.LabelField(label, isMaster ? EditorStyles.boldLabel : EditorStyles.label, GUILayout.Width(180));
                 GUI.backgroundColor = prevBg;
 
                 EditorGUILayout.LabelField(loaded ? "loaded" : (exists ? "unloaded" : "missing"), GUILayout.Width(70));
@@ -88,7 +100,7 @@ namespace YareTools.EditorTools
                     else
                     {
                         if (GUILayout.Button("Load", GUILayout.Width(70)))
-                            LoadScene(path);
+                            LoadScene(path, isMaster);
                     }
 
                     if (GUILayout.Button("Ping", GUILayout.Width(50)))
@@ -100,7 +112,7 @@ namespace YareTools.EditorTools
             }
         }
 
-        private void LoadScene(string path)
+        private void LoadScene(string path, bool isMaster)
         {
             if (Application.isPlaying)
             {
@@ -108,7 +120,9 @@ namespace YareTools.EditorTools
                 return;
             }
 
-            var mode = SceneManager.sceneCount == 0 ? OpenSceneMode.Single : OpenSceneMode.Additive;
+            var mode = isMaster && SceneManager.sceneCount == 0 ? OpenSceneMode.Single
+                : SceneManager.sceneCount == 0 ? OpenSceneMode.Single
+                : OpenSceneMode.Additive;
             EditorSceneManager.OpenScene(path, mode);
         }
 
@@ -139,11 +153,18 @@ namespace YareTools.EditorTools
 
         private void LoadAll()
         {
+            if (masterPath != null)
+            {
+                Scene m = SceneManager.GetSceneByPath(masterPath);
+                if (!m.IsValid() || !m.isLoaded)
+                    LoadScene(masterPath, isMaster: true);
+            }
+
             foreach (var path in scenePaths)
             {
                 Scene s = SceneManager.GetSceneByPath(path);
                 if (s.IsValid() && s.isLoaded) continue;
-                LoadScene(path);
+                LoadScene(path, isMaster: false);
             }
         }
 
