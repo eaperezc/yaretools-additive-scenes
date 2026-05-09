@@ -24,7 +24,7 @@ Requires Unity 2021.3+.
 Add a `SceneLoader` component to a GameObject in your bootstrap scene. Click **Refresh from Build Settings** in the inspector to populate the scene list, or fill it manually.
 
 ```csharp
-using Eaperezc.AdditiveScenes;
+using YareTools;
 
 public class Boot : MonoBehaviour
 {

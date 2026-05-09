@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Eaperezc.AdditiveScenes.EditorTools
+namespace YareTools.EditorTools
 {
     public class SceneLoaderWindow : EditorWindow
     {

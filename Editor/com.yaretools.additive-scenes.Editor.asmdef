@@ -1,8 +1,12 @@
 {
-    "name": "com.eaperezc.additive-scenes",
-    "rootNamespace": "Eaperezc.AdditiveScenes",
-    "references": [],
-    "includePlatforms": [],
+    "name": "com.yaretools.additive-scenes.Editor",
+    "rootNamespace": "YareTools.EditorTools",
+    "references": [
+        "com.yaretools.additive-scenes"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

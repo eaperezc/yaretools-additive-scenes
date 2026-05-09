@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Eaperezc.AdditiveScenes.EditorTools
+namespace YareTools.EditorTools
 {
     [CustomEditor(typeof(SceneLoader))]
     public class SceneLoaderEditor : UnityEditor.Editor

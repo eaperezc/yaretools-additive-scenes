@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Eaperezc.AdditiveScenes
+namespace YareTools
 {
     public class SceneLoader : MonoBehaviour
     {
