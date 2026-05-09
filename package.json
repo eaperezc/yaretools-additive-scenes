@@ -1,0 +1,11 @@
+{
+  "name": "com.eaperezc.additive-scenes",
+  "version": "0.1.0",
+  "displayName": "Additive Scenes",
+  "description": "Lightweight runtime + editor tools for additive multi-scene workflows. Includes a SceneLoader MonoBehaviour that loads/unloads scenes additively with progress tracking, and an editor window that auto-discovers scenes from Build Settings and lets you load/unload them with one click.",
+  "unity": "2021.3",
+  "keywords": ["scenes", "additive", "scene-management", "editor-tools"],
+  "author": {
+    "name": "eaperezc"
+  }
+}
